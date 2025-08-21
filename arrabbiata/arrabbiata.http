@@ -1,0 +1,16 @@
+@arrabbiata_HostAddress = http://localhost:5194
+
+GET {{arrabbiata_HostAddress}}/weatherforecast/
+Accept: application/json
+
+### Test anlegen
+POST {{arrabbiata_HostAddress}}/api/arrabbiata
+Content-Type: application/json
+
+{
+  "userId": "00000000-0000-0000-0000-000000000000",
+  "workoutType": null,
+  "plannedTime": null,
+  "actualTime": 300,
+  "workoutDate": null
+}
