@@ -2,7 +2,8 @@ using arrabbiata;
 using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
-// CORS Policy hinzufügen
+
+// damit es von der localhost seite funktioniert CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -26,9 +27,13 @@ app.UseCors("AllowAll");
 app.MapPost("/api/arrabbiata", (
     [FromBody] Workout workout, 
     WorkoutService service) =>
-{
-    var result = service.ProcessWorkout(workout);
-    return Results.Ok(result);
-});
+    {
+        var result = service.ProcessWorkout(workout);
+        var stats = Helper.CalculateStats(UserManager.GetHistory(workout.UserId));
+
+        var response = new ApiResponse(result, stats);
+        
+        return Results.Ok(response);
+    });
 
 app.Run();

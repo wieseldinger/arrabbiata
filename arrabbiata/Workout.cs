@@ -8,11 +8,10 @@ public class Workout
     public WorkoutType? WorkoutType {get; private set; }
     public int? PlannedTime { get; private set; }
     public int? ActualTime { get; private set; }
-    public DateTime? WorkoutDate { get; private set; }
-    
+
     [JsonConstructor] // optional, aber klarer
     public Workout(Guid userId, WorkoutType? workoutType, int? plannedTime, int? actualTime, DateTime? workoutDate)
-        => (UserId, WorkoutType, PlannedTime, ActualTime, WorkoutDate)
+        => (UserId, WorkoutType, PlannedTime, ActualTime, _)
             = (userId, workoutType, plannedTime, actualTime, workoutDate);
     
     public Workout() {}

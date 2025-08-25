@@ -2,15 +2,15 @@
 
 public class WorkoutService
 {
-    private static readonly int SmallPauseTime = 300;
-    private static readonly int BigPauseTime = 1500;
-    private static readonly int WorkTime = 1500;
-    private static readonly int SmallPauseMultiplier = 10;
-    private static readonly int BigPauseMultiplier = 4;
-    private static readonly int ThresholdMin = 600;
-    private static readonly int ThresholdMax = 1200;
-    private static readonly int BigBrakeBufferTime = 3;
-    
+    private const int SmallPauseTime = 300;
+    private const int BigPauseTime = 1500;
+    private const int WorkTime = 1500;
+    private const int SmallPauseMultiplier = 10;
+    private const int BigPauseMultiplier = 4;
+    private const int ThresholdMin = 600;
+    private const int ThresholdMax = 1200;
+    private const int BigBrakeBufferTime = 3;
+
     public Workout ProcessWorkout(Workout workout)
     {
         Guid userId = workout.UserId;

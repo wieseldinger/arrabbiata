@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("arrabbiata")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f576b067237cdbf3dc84b7c4a9d4ab07ee225e71")]
 [assembly: System.Reflection.AssemblyProductAttribute("arrabbiata")]
 [assembly: System.Reflection.AssemblyTitleAttribute("arrabbiata")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

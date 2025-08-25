@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "arrabbiata", "arrabbiata\arrabbiata.csproj", "{D4E56BF4-C8D1-4F13-A1EF-64A5DC511925}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceTester", "ServiceTester\ServiceTester.csproj", "{F2B487F9-18EB-4109-88D8-0DFDFF6D07EB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "arrabbiataTester", "arrabbiataTester\arrabbiataTester.csproj", "{F2B487F9-18EB-4109-88D8-0DFDFF6D07EB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
