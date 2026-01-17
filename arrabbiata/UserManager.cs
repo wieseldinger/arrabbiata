@@ -1,12 +1,14 @@
-﻿namespace arrabbiata;
+﻿/*using Microsoft.EntityFrameworkCore;
 
-public class UserManager
+namespace arrabbiata;
+
+public class UserManager(ArrabbiataContext db)
 {
     private static List<User> _users = new();
 
     public static bool CheckUser(Guid userId)
     {
-        var result = _users.FirstOrDefault(x => x.UserId == userId);
+        var result = _users.FirstOrDefault(x => x.Id == userId);
         return result is not null;
     }
 
@@ -27,7 +29,13 @@ public class UserManager
     {
         var user = GetUser(userId);
         
-        return user.GetHistory().Select(x => x.ActualTime ?? throw new Exception("Excepted List contains null")).ToList();
+        var history =
+            db.Workouts
+                .Where(w => w.Archived == false && w.ActualTime != null)
+                .OrderBy(w => w.WorkoutDate)
+                .Select(w => w.ActualTime.Value).ToList();
+
+        return history;
     }
 
     public static void ArchiveWorkouts(Guid userId)
@@ -39,7 +47,7 @@ public class UserManager
 
     private static User GetUser(Guid userId)
     {
-        return _users.FirstOrDefault(x => x.UserId == userId) ?? throw new Exception("User is not existing");
+        return _users.FirstOrDefault(x => x.Id == userId) ?? throw new Exception("User is not existing");
     }
     
-}
+}*/

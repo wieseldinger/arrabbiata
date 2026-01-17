@@ -10,8 +10,18 @@ namespace ServiceTester
         private const int BigPauseMin = 1200;
         private const int BigPauseClampMin = 1500;
         private const int BigPauseClampMax = 6000;
-
-        private readonly WorkoutService _workoutService = new();
+        
+        private readonly ArrabbiataContext _context;
+        private readonly WorkoutService _workoutService;
+        
+        public ServiceTests()
+        {
+            _context = new ArrabbiataContext();
+            
+            _context.Database.EnsureCreated(); 
+    
+            _workoutService = new WorkoutService(_context);
+        }
 
         private Workout StartSession(Guid userId)
             => _workoutService.ProcessWorkout(new Workout(userId, null, null, null, null));

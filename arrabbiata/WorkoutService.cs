@@ -1,6 +1,8 @@
-﻿namespace arrabbiata;
+﻿using Microsoft.EntityFrameworkCore;
 
-public class WorkoutService
+namespace arrabbiata;
+
+public class WorkoutService(ArrabbiataContext db)
 {
     private const int SmallPauseTime = 300;
     private const int BigPauseTime = 1500;
@@ -19,36 +21,48 @@ public class WorkoutService
             //first workout of the day
             //or
             //new user
-        if (workout.WorkoutType == null)
+            
+        if (workout.WorkoutType is null)
         {
-            if (!UserManager.CheckUser(userId))
+            if (!db.Users.Any(w => w.Id == userId))
             {
-                UserManager.CreateUser(userId);
+                db.Users.Add(new User(userId));
+                db.SaveChanges();
             }
             else
             {
-                //Existing streak gets archived to start new one
-                    //(you wouldn't want yesterday's time bonus to influence you today's session
-                UserManager.ArchiveWorkouts(userId);
+                db.Workouts
+                    .Where(w => w.UserId == userId && w.Archived == false)
+                    .ExecuteUpdate(setters => setters.SetProperty(w => w.Archived, true));
             }
             Workout newWorkout = new Workout(userId, WorkoutType.Work, WorkTime, null, DateTime.Now);
             return newWorkout;
         }
-
         
-        
-        //If anything was done, workout gets saved at user id
-        UserManager.AddWorkout(userId, workout);
+        if (workout.WorkoutType == WorkoutType.Continue)
+        {
+            var lastWorkout = Helper.GetLastWorkout(db, userId);
 
+            if (lastWorkout is not null)
+                workout = lastWorkout;
+            else
+                throw new Exception("cant continue non existing training");
+        }
+        else if (!Helper.AddWorkout(db, workout))
+        {
+            throw new Exception("cant add same workout type in a row");
+        }
+        
+        db.SaveChanges();
         //if workout was pause -> next will be work -> always 25 mins
         if (workout.WorkoutType == WorkoutType.Pause)
         {
             Workout newWorkout = new Workout(userId, WorkoutType.Work, WorkTime, null, DateTime.Now);
             return newWorkout;
         }
-
-        var history = UserManager.GetHistory(userId);
-
+        
+        var history = Helper.GetHistory(db, userId);
+        
         //if next pause is Small then:
             //then calculate small pause time + bonus from last work
         //if next pause is Big then:

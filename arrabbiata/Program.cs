@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddDbContext<ArrabbiataContext>();
+
 // damit es von der localhost seite funktioniert CORS
 builder.Services.AddCors(options =>
 {
@@ -22,18 +24,25 @@ var app = builder.Build();
 // CORS aktivieren
 app.UseCors("AllowAll");
 
-
-
 app.MapPost("/api/arrabbiata", (
     [FromBody] Workout workout, 
-    WorkoutService service) =>
+    WorkoutService service,
+    ArrabbiataContext db) =>
     {
         var result = service.ProcessWorkout(workout);
-        var stats = Helper.CalculateStats(UserManager.GetHistory(workout.UserId));
+        var history = Helper.GetHistory(db, workout.UserId);
+        var stats = Helper.CalculateStats(db, workout.UserId);
 
-        var response = new ApiResponse(result, stats);
+        var response = new ApiResponse(result, history, stats);
         
         return Results.Ok(response);
     });
+
+//herausschmeißen vor commit
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ArrabbiataContext>();
+    db.Database.EnsureCreated();
+}
 
 app.Run();
