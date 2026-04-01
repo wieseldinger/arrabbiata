@@ -42,7 +42,7 @@ public static class Helper
             return false;
         }
 
-        var tempWorkout = new Workout(workout.UserId, workout.WorkoutType, workout.PlannedTime, workout.ActualTime, DateTime.Now);
+        var tempWorkout = new Workout(workout.UserId, workout.WorkoutType, workout.PlannedTime, workout.ActualTime, DateTime.Now, workout.Tag);
         db.Workouts.Add(tempWorkout);
         return true;
     }

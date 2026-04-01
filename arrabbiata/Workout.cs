@@ -11,11 +11,12 @@ public class Workout
     public int? ActualTime { get; private set; }
     public bool Archived { get; private set; } = false;
     public DateTime? WorkoutDate { get; private set; }
+    public Tag? Tag { get; private set; }
 
     [JsonConstructor] // optional, aber klarer
-    public Workout(Guid userId, WorkoutType? workoutType, int? plannedTime, int? actualTime, DateTime? workoutDate)
-        => (Id, UserId, WorkoutType, PlannedTime, ActualTime, WorkoutDate)
-            = (Guid.NewGuid(), userId, workoutType, plannedTime, actualTime, workoutDate);
+    public Workout(Guid userId, WorkoutType? workoutType, int? plannedTime, int? actualTime, DateTime? workoutDate, Tag? tag)
+        => (Id, UserId, WorkoutType, PlannedTime, ActualTime, WorkoutDate, Tag)
+            = (Guid.NewGuid(), userId, workoutType, plannedTime, actualTime, workoutDate, tag);
     
     protected Workout() {}
 
@@ -24,7 +25,6 @@ public class Workout
         Archived = true;
     }
 }
-
 
 public enum WorkoutType 
 {

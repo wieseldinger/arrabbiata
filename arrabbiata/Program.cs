@@ -1,5 +1,6 @@
 using arrabbiata;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,11 +39,10 @@ app.MapPost("/api/arrabbiata", (
         return Results.Ok(response);
     });
 
-//herausschmeißen vor commit
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<ArrabbiataContext>();
-    db.Database.EnsureCreated();
+    var context = scope.ServiceProvider.GetRequiredService<ArrabbiataContext>();
+    context.Database.Migrate();
 }
 
 app.Run();

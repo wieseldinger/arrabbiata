@@ -21,7 +21,6 @@ public class WorkoutService(ArrabbiataContext db)
             //first workout of the day
             //or
             //new user
-            
         if (workout.WorkoutType is null)
         {
             if (!db.Users.Any(w => w.Id == userId))
@@ -35,10 +34,37 @@ public class WorkoutService(ArrabbiataContext db)
                     .Where(w => w.UserId == userId && w.Archived == false)
                     .ExecuteUpdate(setters => setters.SetProperty(w => w.Archived, true));
             }
-            Workout newWorkout = new Workout(userId, WorkoutType.Work, WorkTime, null, DateTime.Now);
+            Workout newWorkout = new Workout(userId, WorkoutType.Work, WorkTime, null, DateTime.Now, workout.Tag);
             return newWorkout;
         }
         
+        //tag handling
+        Tag? realTag = null;
+
+        if (workout.Tag is not null)
+        {
+            //User can create NEW Tags with an empty Id PLUS the name
+            if (workout.Tag.Id == Guid.Empty)
+            {
+                if (workout.Tag.Name is not null)
+                {
+                    Guid realId = db.Tags
+                        .Where(t => t.Name == workout.Tag.Name)
+                        .Select(t => (Guid?)t.Id)
+                        .FirstOrDefault()
+                    ?? Guid.NewGuid();
+
+                    realTag = new Tag(realId, null);
+                }
+            }
+            else if(db.Tags.Contains(workout.Tag))
+            {
+                realTag = new Tag(workout.Tag.Id, null);
+            }
+        }
+
+        //If Workup type is null its:
+            //a user that wants to continue an old workout
         if (workout.WorkoutType == WorkoutType.Continue)
         {
             var lastWorkout = Helper.GetLastWorkout(db, userId);
@@ -48,7 +74,7 @@ public class WorkoutService(ArrabbiataContext db)
             else
                 throw new Exception("cant continue non existing training");
         }
-        else if (!Helper.AddWorkout(db, workout))
+        else if (!Helper.AddWorkout(db, new Workout(workout.Id, workout.WorkoutType, workout.PlannedTime, workout.ActualTime, workout.WorkoutDate, realTag)))
         {
             throw new Exception("cant add same workout type in a row");
         }
@@ -57,7 +83,7 @@ public class WorkoutService(ArrabbiataContext db)
         //if workout was pause -> next will be work -> always 25 mins
         if (workout.WorkoutType == WorkoutType.Pause)
         {
-            Workout newWorkout = new Workout(userId, WorkoutType.Work, WorkTime, null, DateTime.Now);
+            Workout newWorkout = new Workout(userId, WorkoutType.Work, WorkTime, null, DateTime.Now, null);
             return newWorkout;
         }
         
@@ -72,12 +98,12 @@ public class WorkoutService(ArrabbiataContext db)
             int extraTime = ((history.LastOrDefault() - WorkTime) / SmallPauseMultiplier);
             int newPauseTime = SmallPauseTime + extraTime;
             
-            Workout newWorkout = new Workout(userId, WorkoutType.Pause, newPauseTime, null, DateTime.Now);
+            Workout newWorkout = new Workout(userId, WorkoutType.Pause, newPauseTime, null, DateTime.Now, null);
             return newWorkout;
         }
         else
         {
-            Workout newWorkout = new Workout(userId, WorkoutType.Pause, CalculateBigPause(history), null, DateTime.Now);
+            Workout newWorkout = new Workout(userId, WorkoutType.Pause, CalculateBigPause(history), null, DateTime.Now, null);
             return newWorkout;
         }
         
